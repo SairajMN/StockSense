@@ -23,7 +23,7 @@ export function renderAuthView(container, initialTab = 'login') {
             </div>
           </div>
           <div class="px-2.5 py-1 rounded border border-[#fdf9f4]/30 font-mono text-[11px] tracking-widest uppercase text-[#fdf9f4]/80">
-            SYS.BAY // v2.4
+            SYSTEM v2.4
           </div>
         </div>
 
@@ -32,7 +32,7 @@ export function renderAuthView(container, initialTab = 'login') {
           <div class="space-y-2">
             <div class="inline-flex items-center gap-2 font-mono text-[11px] text-[#fdf9f4]/80 tracking-widest uppercase">
               <span class="w-2 h-2 rounded-full bg-[#fdf9f4] inline-block animate-pulse"></span>
-              WAREHOUSE INVENTORY &amp; DOCK TELEMETRY LEDGER
+              WAREHOUSE INVENTORY &amp; STOCK MANAGEMENT
             </div>
             <h1 class="font-mono text-2xl sm:text-3xl lg:text-[34px] leading-tight text-[#fdf9f4] uppercase font-bold tracking-tight">
               Track every unit, every location, in real time.
@@ -75,15 +75,15 @@ export function renderAuthView(container, initialTab = 'login') {
           </div>
 
           <div class="font-mono text-xs text-[#fdf9f4]/80 space-y-1">
-            <p>• Automated barcode &amp; RF telemetry synchronization</p>
-            <p>• Immutable ledger tracking for dock loading &amp; transfer bays</p>
+            <p>• Automated barcode &amp; location tracking</p>
+            <p>• Multi-location receipts, deliveries, and internal transfers</p>
           </div>
         </div>
 
-        <!-- Bottom: Serial & Release Stamp Footer -->
+        <!-- Bottom: System Status Footer -->
         <div class="relative z-10 pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-mono text-[#fdf9f4]/75 border-t border-[#fdf9f4]/20">
           <span class="tracking-widest uppercase">StockSense System • Release 2.4</span>
-          <span class="tracking-widest opacity-80 uppercase">TERMINAL LOG: SEC-08 // ONLINE</span>
+          <span class="tracking-widest opacity-80 uppercase">SYSTEM STATUS: ONLINE</span>
         </div>
       </aside>
 
@@ -93,26 +93,26 @@ export function renderAuthView(container, initialTab = 'login') {
         <div class="w-full max-w-xl mx-auto px-6 pt-6 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-none bg-[#536443]"></span>
-            <span class="font-mono text-xs text-[#536443] font-bold">SECURE DISPATCH ACCESS</span>
+            <span class="font-mono text-xs text-[#536443] font-bold uppercase tracking-wider">SECURE ACCESS</span>
           </div>
           <div class="flex items-center gap-2 font-mono text-xs text-[#58413c]">
-            <span id="auth-alt-text">ALREADY A MEMBER?</span>
-            <button id="auth-alt-btn" class="text-[#b84328] hover:underline font-bold uppercase cursor-pointer">LOG IN</button>
+            <span id="auth-alt-text">Don't have an account?</span>
+            <button id="auth-alt-btn" class="text-[#b84328] hover:underline font-bold uppercase cursor-pointer">Sign Up</button>
           </div>
         </div>
 
         <!-- Centered Authentication Form Container -->
         <main class="w-full max-w-xl mx-auto px-6 py-8 my-auto flex flex-col items-center justify-center">
           <div class="w-full">
-            <!-- Index Card Tabs Container -->
+            <!-- Tabs Container -->
             <div id="tabs-container" class="relative z-10 flex items-end justify-start px-2 gap-1 font-mono text-xs">
               <button id="tab-btn-login" class="px-5 py-2 rounded-t-sm font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer">
                 <span class="w-2 h-2 rounded-full inline-block"></span>
-                <span>[ LOG IN ]</span>
+                <span>[ Sign In ]</span>
               </button>
               <button id="tab-btn-signup" class="px-5 py-2 rounded-t-sm font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer">
                 <span class="w-2 h-2 rounded-full inline-block"></span>
-                <span>[ SIGN UP ]</span>
+                <span>[ Sign Up ]</span>
               </button>
             </div>
 
@@ -121,101 +121,133 @@ export function renderAuthView(container, initialTab = 'login') {
               <!-- Perforated Stub Line -->
               <div class="w-full pb-3 mb-4 opacity-50 select-none overflow-hidden">
                 <span class="font-mono text-[10px] text-[#8c716b] tracking-widest whitespace-nowrap">
-                  - - - - - TEAR SHEET ALONG REGISTRATION RULE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                  - - - - - KRAFT LEDGER USER REGISTRATION &amp; AUTHENTICATION RULE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
                 </span>
               </div>
 
-              <!-- Main Auth Form Container -->
+              <!-- Main Auth Container -->
               <div id="auth-main-panel">
-                <!-- Manifest Header Block -->
-                <div class="flex flex-col pb-4 mb-6 border-b border-[#cfc5b4]/60">
-                  <h2 id="auth-form-title" class="font-mono text-2xl font-bold uppercase text-[#262421] tracking-tight">LOG IN</h2>
-                  <p id="auth-form-subtitle" class="font-body text-sm text-[#58413c] mt-1">Enter your credentials to access the terminal deck.</p>
+                <!-- Header Block -->
+                <div class="flex flex-col pb-4 mb-5 border-b border-[#cfc5b4]/60">
+                  <h2 id="auth-form-title" class="font-mono text-2xl font-bold uppercase text-[#262421] tracking-tight">SIGN IN</h2>
+                  <p id="auth-form-subtitle" class="font-body text-sm text-[#58413c] mt-1">Enter your credentials to access your account.</p>
                 </div>
 
-                <!-- Main Form -->
-                <form id="auth-form" class="flex flex-col gap-4">
-                  <!-- Operator Name (Sign Up only) -->
-                  <div id="group-name" class="flex flex-col gap-1 hidden">
-                    <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider flex justify-between" for="auth-name">
-                      <span>OPERATOR FULL NAME // BADGE CALLOUT</span>
-                      <span class="text-[#b84328]">[REQUIRED]</span>
-                    </label>
-                    <input id="auth-name" type="text" placeholder="e.g. MARCUS VANCE" 
-                      class="w-full bg-[#fdf9f4] border border-[#cfc5b4] rounded-none p-2.5 font-mono text-sm text-[#262421] focus:outline-none focus:border-[#b84328]" />
+                <!-- 1. LOGIN FORM (Exactly: Login ID, Password, Sign In button, Forgot Password? and Sign Up links) -->
+                <form id="login-form" class="flex flex-col gap-4">
+                  <!-- General Login Error Container -->
+                  <div id="login-error-msg" class="p-3 bg-[#ffdad6] border border-[#ba1a1a] text-[#ba1a1a] font-mono text-xs font-bold hidden leading-relaxed">
+                    Invalid Login Id or Password.
                   </div>
 
-                  <!-- Email -->
+                  <!-- Login ID -->
                   <div class="flex flex-col gap-1">
-                    <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider flex justify-between" for="auth-email">
-                      <span id="label-email">OPERATOR EMAIL // DISPATCH ID</span>
-                      <span class="text-[#536443] font-normal">[VERIFIED]</span>
+                    <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider" for="login-id">
+                      Login ID
                     </label>
-                    <input id="auth-email" type="email" required placeholder="marcus.vance@stocksense.io"
+                    <input id="login-id" type="text" autocomplete="username" required placeholder="Enter Login ID"
                       class="w-full bg-[#fdf9f4] border border-[#cfc5b4] rounded-none p-2.5 font-mono text-sm text-[#262421] focus:outline-none focus:border-[#b84328]" />
+                    <div id="login-id-error" class="text-[11px] font-mono text-[#ba1a1a] font-bold hidden"></div>
                   </div>
 
-                  <!-- Assigned Sector (Sign Up only) -->
-                  <div id="group-zone" class="flex flex-col gap-1 hidden">
-                    <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider flex justify-between" for="auth-zone">
-                      <span>ASSIGNED SECTOR // DEPOT ZONE</span>
-                      <span class="text-[#536443]">[ACTIVE]</span>
-                    </label>
-                    <select id="auth-zone" class="w-full bg-[#fdf9f4] border border-[#cfc5b4] rounded-none p-2.5 font-mono text-sm text-[#262421] focus:outline-none focus:border-[#b84328]">
-                      <option value="WH-01">WH-01 [MAIN AUTOMATED BAY]</option>
-                      <option value="WH-02">WH-02 [COLD STORAGE VAULT]</option>
-                      <option value="WH-03">WH-03 [PALLET RACKING NORTH]</option>
-                      <option value="WH-04">WH-04 [HAZMAT INSPECTION PIT]</option>
-                    </select>
-                  </div>
-
-                  <!-- Password -->
+                  <!-- Password (with show/hide toggle) -->
                   <div class="flex flex-col gap-1">
                     <div class="flex items-center justify-between">
-                      <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider" for="auth-password">SECURITY ACCESS KEY</label>
-                      <button id="toggle-pwd-btn" type="button" class="font-mono text-xs text-[#b84328] uppercase hover:underline flex items-center gap-1 cursor-pointer">
-                        <span class="material-symbols-outlined text-[15px]" id="pwd-icon">visibility</span>
-                        <span id="pwd-text">SHOW</span>
+                      <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider" for="login-password">
+                        Password
+                      </label>
+                      <button id="toggle-login-pwd" type="button" class="font-mono text-xs text-[#b84328] uppercase hover:underline flex items-center gap-1 cursor-pointer">
+                        <span class="material-symbols-outlined text-[15px]" id="login-pwd-icon">visibility</span>
+                        <span id="login-pwd-text">SHOW</span>
                       </button>
                     </div>
-                    <input id="auth-password" type="password" required placeholder="••••••••••••"
+                    <input id="login-password" type="password" autocomplete="current-password" required placeholder="••••••••••••"
                       class="w-full bg-[#fdf9f4] border border-[#cfc5b4] rounded-none p-2.5 font-mono text-sm text-[#262421] focus:outline-none focus:border-[#b84328] tracking-widest" />
+                    <div id="login-password-error" class="text-[11px] font-mono text-[#ba1a1a] font-bold hidden"></div>
                   </div>
 
-                  <!-- Options Row with "Forgot Password?" (P0.2) -->
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 font-mono text-xs">
-                    <label class="flex items-center gap-2 cursor-pointer select-none">
-                      <input id="remember-me" type="checkbox" checked class="accent-[#b84328] w-4 h-4 rounded-none cursor-pointer" />
-                      <span class="text-[#58413c] uppercase">REMEMBER TERMINAL</span>
-                    </label>
+                  <!-- Submit Button: "Sign In" -->
+                  <div class="pt-2">
+                    <button id="btn-login-submit" type="submit"
+                      class="w-full py-3 px-6 rounded-none bg-[#b84328] hover:bg-[#972b12] text-white font-mono text-sm font-bold uppercase tracking-wider shadow-sm transform -rotate-[0.5deg] hover:rotate-0 active:translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                      <span class="material-symbols-outlined text-[18px]">login</span>
+                      <span>Sign In</span>
+                    </button>
+                  </div>
 
-                    <div class="flex items-center gap-3">
-                      <button type="button" id="btn-forgot-password" class="text-[#b84328] font-bold hover:underline uppercase cursor-pointer">
-                        FORGOT PASSWORD?
-                      </button>
-                      <span class="text-[#cfc5b4]">•</span>
-                      <button type="button" id="demo-operator-btn" class="text-[#536443] font-bold hover:underline uppercase cursor-pointer">
-                        ⚡ DEMO
+                  <!-- Links: "Forgot Password?" and "Sign Up" -->
+                  <div class="flex items-center justify-between pt-2 border-t border-dashed border-[#cfc5b4]/60 font-mono text-xs">
+                    <button type="button" id="btn-forgot-password" class="text-[#b84328] font-bold hover:underline uppercase cursor-pointer">
+                      Forgot Password?
+                    </button>
+                    <button type="button" id="link-goto-signup" class="text-[#58413c] font-bold hover:underline uppercase cursor-pointer">
+                      Sign Up
+                    </button>
+                  </div>
+                </form>
+
+                <!-- 2. SIGN UP FORM (Exactly: Login ID, Email ID, Password with toggle, Re-Enter Password, Sign Up button) -->
+                <form id="signup-form" class="flex flex-col gap-4 hidden">
+                  <!-- Login ID -->
+                  <div class="flex flex-col gap-1">
+                    <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider" for="signup-login-id">
+                      Login ID
+                    </label>
+                    <input id="signup-login-id" type="text" autocomplete="username" placeholder="6–12 characters"
+                      class="w-full bg-[#fdf9f4] border border-[#cfc5b4] rounded-none p-2.5 font-mono text-sm text-[#262421] focus:outline-none focus:border-[#b84328]" />
+                    <div id="signup-login-id-error" class="text-[11px] font-mono text-[#ba1a1a] font-bold hidden"></div>
+                  </div>
+
+                  <!-- Email ID -->
+                  <div class="flex flex-col gap-1">
+                    <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider" for="signup-email">
+                      Email ID
+                    </label>
+                    <input id="signup-email" type="email" autocomplete="email" placeholder="name@example.com"
+                      class="w-full bg-[#fdf9f4] border border-[#cfc5b4] rounded-none p-2.5 font-mono text-sm text-[#262421] focus:outline-none focus:border-[#b84328]" />
+                    <div id="signup-email-error" class="text-[11px] font-mono text-[#ba1a1a] font-bold hidden"></div>
+                  </div>
+
+                  <!-- Password (with show/hide toggle) -->
+                  <div class="flex flex-col gap-1">
+                    <div class="flex items-center justify-between">
+                      <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider" for="signup-password">
+                        Password
+                      </label>
+                      <button id="toggle-signup-pwd" type="button" class="font-mono text-xs text-[#b84328] uppercase hover:underline flex items-center gap-1 cursor-pointer">
+                        <span class="material-symbols-outlined text-[15px]" id="signup-pwd-icon">visibility</span>
+                        <span id="signup-pwd-text">SHOW</span>
                       </button>
                     </div>
+                    <input id="signup-password" type="password" autocomplete="new-password" placeholder="Min. 9 characters, uppercase, lowercase, special character"
+                      class="w-full bg-[#fdf9f4] border border-[#cfc5b4] rounded-none p-2.5 font-mono text-sm text-[#262421] focus:outline-none focus:border-[#b84328] tracking-widest" />
+                    <div id="signup-password-error" class="text-[11px] font-mono text-[#ba1a1a] font-bold hidden leading-relaxed"></div>
                   </div>
 
-                  <!-- Terms agreement (Sign up only) -->
-                  <div id="group-terms" class="pt-1 select-none hidden">
-                    <label class="flex items-start gap-2 cursor-pointer">
-                      <input id="agree-terms" type="checkbox" class="accent-[#b84328] w-4 h-4 rounded-none mt-0.5 cursor-pointer" />
-                      <span class="font-mono text-xs text-[#58413c]">
-                        I AGREE TO THE <a href="#" class="text-[#b84328] hover:underline">TERMS OF SERVICE</a> AND <a href="#" class="text-[#b84328] hover:underline">DEPOT SAFETY RULES</a>
-                      </span>
+                  <!-- Re-Enter Password -->
+                  <div class="flex flex-col gap-1">
+                    <label class="font-mono text-xs uppercase text-[#262421] font-bold tracking-wider" for="signup-confirm-password">
+                      Re-Enter Password
                     </label>
+                    <input id="signup-confirm-password" type="password" autocomplete="new-password" placeholder="Re-enter your password"
+                      class="w-full bg-[#fdf9f4] border border-[#cfc5b4] rounded-none p-2.5 font-mono text-sm text-[#262421] focus:outline-none focus:border-[#b84328] tracking-widest" />
+                    <div id="signup-confirm-password-error" class="text-[11px] font-mono text-[#ba1a1a] font-bold hidden"></div>
                   </div>
 
-                  <!-- Submit Button -->
-                  <div class="pt-4 flex flex-col gap-3">
-                    <button id="auth-submit-btn" type="submit" 
+                  <!-- Submit Button: "Sign Up" -->
+                  <div class="pt-2">
+                    <button id="btn-signup-submit" type="submit"
                       class="w-full py-3 px-6 rounded-none bg-[#b84328] hover:bg-[#972b12] text-white font-mono text-sm font-bold uppercase tracking-wider shadow-sm transform -rotate-[0.5deg] hover:rotate-0 active:translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                      <span class="material-symbols-outlined text-[20px]" id="auth-submit-icon">login</span>
-                      <span id="auth-submit-label">LOG IN TO COMMAND DECK</span>
+                      <span class="material-symbols-outlined text-[18px]">person_add</span>
+                      <span>Sign Up</span>
+                    </button>
+                  </div>
+
+                  <!-- Already have account link -->
+                  <div class="text-center pt-2 border-t border-dashed border-[#cfc5b4]/60 font-mono text-xs text-[#58413c]">
+                    Already have an account?
+                    <button type="button" id="link-goto-login" class="text-[#b84328] font-bold hover:underline uppercase cursor-pointer ml-1">
+                      Sign In
                     </button>
                   </div>
                 </form>
@@ -225,13 +257,13 @@ export function renderAuthView(container, initialTab = 'login') {
               <div id="reset-panel" class="hidden">
                 <div class="flex flex-col pb-4 mb-5 border-b border-[#cfc5b4]/60">
                   <div class="flex items-center justify-between">
-                    <h2 class="font-mono text-xl font-bold uppercase text-[#262421] tracking-tight">SECURITY KEY RECOVERY // OTP</h2>
+                    <h2 class="font-mono text-xl font-bold uppercase text-[#262421] tracking-tight">PASSWORD RESET // OTP</h2>
                     <span id="otp-step-indicator" class="font-mono text-[10px] bg-[#d3e6bd]/40 border border-[#536443]/40 text-[#536443] px-2 py-0.5 font-bold uppercase">
                       STEP 1 OF 3
                     </span>
                   </div>
                   <p id="otp-step-desc" class="font-body text-xs text-[#58413c] mt-1">
-                    Enter your registered operator dispatch email to receive a 6-digit OTP verification code.
+                    Enter your registered email address to receive a 6-digit OTP verification code.
                   </p>
                 </div>
 
@@ -240,18 +272,18 @@ export function renderAuthView(container, initialTab = 'login') {
                   <div class="flex items-center justify-between">
                     <span class="text-[#536443] font-bold uppercase flex items-center gap-1">
                       <span class="material-symbols-outlined text-[16px]">key</span>
-                      <span>SECURE OTP GENERATED:</span>
+                      <span>VERIFICATION CODE GENERATED:</span>
                     </span>
                     <strong id="mock-otp-code" class="text-base text-[#b84328] tracking-widest font-mono">000000</strong>
                   </div>
-                  <div class="text-[10px] text-[#58413c] mt-1">Mock OTP delivered for hackathon demo. Valid for 10 minutes.</div>
+                  <div class="text-[10px] text-[#58413c] mt-1">Verification OTP generated for demonstration. Valid for 10 minutes.</div>
                 </div>
 
                 <!-- Step 1: Request Email -->
                 <div id="reset-step-1" class="space-y-4 font-mono text-xs">
                   <div>
-                    <label class="block text-[#565145] font-bold mb-1 uppercase">OPERATOR EMAIL:</label>
-                    <input type="email" id="reset-email" placeholder="marcus.vance@stocksense.io" value="marcus.vance@stocksense.io"
+                    <label class="block text-[#565145] font-bold mb-1 uppercase">EMAIL ID:</label>
+                    <input type="email" id="reset-email" placeholder="name@example.com"
                       class="w-full bg-[#fdf9f4] border border-[#cfc5b4] p-2.5 text-[#262421] font-bold focus:border-[#b84328] focus:outline-none" />
                   </div>
                   <button id="btn-request-otp" class="w-full py-2.5 bg-[#b84328] hover:bg-[#972b12] text-white font-bold uppercase tracking-wider cursor-pointer">
@@ -274,26 +306,26 @@ export function renderAuthView(container, initialTab = 'login') {
                 <!-- Step 3: Enter New Password -->
                 <div id="reset-step-3" class="hidden space-y-4 font-mono text-xs">
                   <div>
-                    <label class="block text-[#565145] font-bold mb-1 uppercase">NEW SECURITY ACCESS KEY:</label>
-                    <input type="password" id="reset-new-pwd" placeholder="••••••••••••"
+                    <label class="block text-[#565145] font-bold mb-1 uppercase">NEW PASSWORD:</label>
+                    <input type="password" id="reset-new-pwd" placeholder="Min. 9 characters, uppercase, lowercase, symbol"
                       class="w-full bg-[#fdf9f4] border border-[#cfc5b4] p-2.5 text-[#262421] font-bold tracking-widest focus:border-[#b84328] focus:outline-none" />
                   </div>
                   <button id="btn-save-new-pwd" class="w-full py-2.5 bg-[#b84328] hover:bg-[#972b12] text-white font-bold uppercase tracking-wider cursor-pointer">
-                    UPDATE ACCESS KEY &amp; LOG IN
+                    UPDATE PASSWORD &amp; SIGN IN
                   </button>
                 </div>
 
                 <div class="mt-4 pt-3 border-t border-dashed border-[#cfc5b4] flex items-center justify-between text-xs font-mono">
                   <button id="btn-cancel-reset" class="text-[#565145] hover:text-[#b84328] font-bold uppercase cursor-pointer">
-                    ← RETURN TO LOG IN
+                    ← RETURN TO SIGN IN
                   </button>
                 </div>
               </div>
 
               <!-- Footer note -->
               <div class="mt-6 pt-4 border-t border-dashed border-[#cfc5b4] flex items-center justify-between text-[11px] font-mono text-[#58413c]">
-                <span>ENCRYPTION: AES-256-GCM</span>
-                <span class="text-[#536443] font-bold">STATUS: DOCK READY</span>
+                <span>STOCKSENSE IDENTITY ACCESS</span>
+                <span class="text-[#536443] font-bold">SYSTEM ACTIVE</span>
               </div>
             </div>
           </div>
@@ -307,37 +339,50 @@ export function renderAuthView(container, initialTab = 'login') {
             <span>•</span>
             <span class="hover:underline cursor-pointer">TERMS</span>
             <span>•</span>
-            <span class="hover:underline cursor-pointer">MANIFEST SPECS</span>
+            <span class="hover:underline cursor-pointer">DOCS</span>
           </div>
         </footer>
       </section>
     </div>
   `;
 
-  // Attach event handlers
+  // UI Elements
   const tabLogin = document.getElementById('tab-btn-login');
   const tabSignup = document.getElementById('tab-btn-signup');
-  const groupName = document.getElementById('group-name');
-  const groupZone = document.getElementById('group-zone');
-  const groupTerms = document.getElementById('group-terms');
   const formTitle = document.getElementById('auth-form-title');
   const formSubtitle = document.getElementById('auth-form-subtitle');
-  const submitLabel = document.getElementById('auth-submit-label');
-  const submitIcon = document.getElementById('auth-submit-icon');
   const altText = document.getElementById('auth-alt-text');
   const altBtn = document.getElementById('auth-alt-btn');
-  const togglePwdBtn = document.getElementById('toggle-pwd-btn');
-  const pwdInput = document.getElementById('auth-password');
-  const pwdIcon = document.getElementById('pwd-icon');
-  const pwdText = document.getElementById('pwd-text');
-  const authForm = document.getElementById('auth-form');
-  const demoBtn = document.getElementById('demo-operator-btn');
-
   const authMainPanel = document.getElementById('auth-main-panel');
   const resetPanel = document.getElementById('reset-panel');
   const tabsContainer = document.getElementById('tabs-container');
+
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+
+  // Login Form Elements
+  const loginIdInput = document.getElementById('login-id');
+  const loginPasswordInput = document.getElementById('login-password');
+  const loginErrorMsg = document.getElementById('login-error-msg');
+  const toggleLoginPwdBtn = document.getElementById('toggle-login-pwd');
+  const loginPwdIcon = document.getElementById('login-pwd-icon');
+  const loginPwdText = document.getElementById('login-pwd-text');
   const btnForgotPwd = document.getElementById('btn-forgot-password');
-  const btnCancelReset = document.getElementById('btn-cancel-reset');
+  const linkGotoSignup = document.getElementById('link-goto-signup');
+
+  // Sign Up Form Elements
+  const signupLoginIdInput = document.getElementById('signup-login-id');
+  const signupLoginIdError = document.getElementById('signup-login-id-error');
+  const signupEmailInput = document.getElementById('signup-email');
+  const signupEmailError = document.getElementById('signup-email-error');
+  const signupPasswordInput = document.getElementById('signup-password');
+  const signupPasswordError = document.getElementById('signup-password-error');
+  const signupConfirmPasswordInput = document.getElementById('signup-confirm-password');
+  const signupConfirmPasswordError = document.getElementById('signup-confirm-password-error');
+  const toggleSignupPwdBtn = document.getElementById('toggle-signup-pwd');
+  const signupPwdIcon = document.getElementById('signup-pwd-icon');
+  const signupPwdText = document.getElementById('signup-pwd-text');
+  const linkGotoLogin = document.getElementById('link-goto-login');
 
   let currentMode = initialTab;
 
@@ -347,6 +392,10 @@ export function renderAuthView(container, initialTab = 'login') {
     resetPanel.classList.add('hidden');
     tabsContainer.classList.remove('hidden');
 
+    // Reset errors
+    clearLoginErrors();
+    clearSignupErrors();
+
     if (mode === 'signup') {
       tabSignup.className = "px-5 py-2 rounded-t-sm font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer bg-white text-[#b84328] shadow-sm border-t border-l border-r border-[#cfc5b4]";
       tabSignup.querySelector('span:first-child').className = "w-2 h-2 rounded-full inline-block bg-[#b84328]";
@@ -354,15 +403,13 @@ export function renderAuthView(container, initialTab = 'login') {
       tabLogin.className = "px-5 py-2 rounded-t-sm font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer bg-[#e6e2dd] text-[#58413c] hover:bg-[#ddd9d5]";
       tabLogin.querySelector('span:first-child').className = "w-2 h-2 rounded-full inline-block bg-[#cfc5b4]";
 
-      groupName.classList.remove('hidden');
-      groupZone.classList.remove('hidden');
-      groupTerms.classList.remove('hidden');
-      formTitle.textContent = "CREATE OPERATOR ACCOUNT";
-      formSubtitle.textContent = "Register terminal credentials for depot dispatch and telemetry logging.";
-      submitLabel.textContent = "REGISTER OPERATOR & ENTER";
-      submitIcon.textContent = "person_add";
-      altText.textContent = "ALREADY REGISTERED?";
-      altBtn.textContent = "LOG IN";
+      loginForm.classList.add('hidden');
+      signupForm.classList.remove('hidden');
+
+      formTitle.textContent = "SIGN UP";
+      formSubtitle.textContent = "Fill in your details below to create your account.";
+      altText.textContent = "Already have an account?";
+      altBtn.textContent = "Sign In";
     } else {
       tabLogin.className = "px-5 py-2 rounded-t-sm font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer bg-white text-[#b84328] shadow-sm border-t border-l border-r border-[#cfc5b4]";
       tabLogin.querySelector('span:first-child').className = "w-2 h-2 rounded-full inline-block bg-[#b84328]";
@@ -370,70 +417,204 @@ export function renderAuthView(container, initialTab = 'login') {
       tabSignup.className = "px-5 py-2 rounded-t-sm font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer bg-[#e6e2dd] text-[#58413c] hover:bg-[#ddd9d5]";
       tabSignup.querySelector('span:first-child').className = "w-2 h-2 rounded-full inline-block bg-[#cfc5b4]";
 
-      groupName.classList.add('hidden');
-      groupZone.classList.add('hidden');
-      groupTerms.classList.add('hidden');
-      formTitle.textContent = "LOG IN TO TERMINAL";
-      formSubtitle.textContent = "Enter your credentials to access the terminal deck.";
-      submitLabel.textContent = "LOG IN TO COMMAND DECK";
-      submitIcon.textContent = "login";
-      altText.textContent = "NEED AN ACCOUNT?";
-      altBtn.textContent = "SIGN UP";
+      signupForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+
+      formTitle.textContent = "SIGN IN";
+      formSubtitle.textContent = "Enter your credentials to access your account.";
+      altText.textContent = "Don't have an account?";
+      altBtn.textContent = "Sign Up";
     }
   }
 
+  function setFieldError(input, errorEl, message) {
+    if (message) {
+      errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
+      input.classList.add('border-[#ba1a1a]');
+      input.classList.remove('border-[#cfc5b4]');
+    } else {
+      errorEl.textContent = '';
+      errorEl.classList.add('hidden');
+      input.classList.remove('border-[#ba1a1a]');
+      input.classList.add('border-[#cfc5b4]');
+    }
+  }
+
+  function clearLoginErrors() {
+    loginErrorMsg.classList.add('hidden');
+    loginIdInput.classList.remove('border-[#ba1a1a]');
+    loginIdInput.classList.add('border-[#cfc5b4]');
+    loginPasswordInput.classList.remove('border-[#ba1a1a]');
+    loginPasswordInput.classList.add('border-[#cfc5b4]');
+  }
+
+  function clearSignupErrors() {
+    setFieldError(signupLoginIdInput, signupLoginIdError, null);
+    setFieldError(signupEmailInput, signupEmailError, null);
+    setFieldError(signupPasswordInput, signupPasswordError, null);
+    setFieldError(signupConfirmPasswordInput, signupConfirmPasswordError, null);
+  }
+
+  // Tab & Alt Button Navigation
   tabLogin.addEventListener('click', () => setMode('login'));
   tabSignup.addEventListener('click', () => setMode('signup'));
   altBtn.addEventListener('click', () => setMode(currentMode === 'login' ? 'signup' : 'login'));
+  linkGotoSignup.addEventListener('click', () => setMode('signup'));
+  linkGotoLogin.addEventListener('click', () => setMode('login'));
 
-  // Toggle Password
-  togglePwdBtn.addEventListener('click', () => {
-    if (pwdInput.type === 'password') {
-      pwdInput.type = 'text';
-      pwdIcon.textContent = 'visibility_off';
-      pwdText.textContent = 'HIDE';
+  // Password Show / Hide Toggles
+  toggleLoginPwdBtn.addEventListener('click', () => {
+    if (loginPasswordInput.type === 'password') {
+      loginPasswordInput.type = 'text';
+      loginPwdIcon.textContent = 'visibility_off';
+      loginPwdText.textContent = 'HIDE';
     } else {
-      pwdInput.type = 'password';
-      pwdIcon.textContent = 'visibility';
-      pwdText.textContent = 'SHOW';
+      loginPasswordInput.type = 'password';
+      loginPwdIcon.textContent = 'visibility';
+      loginPwdText.textContent = 'SHOW';
     }
   });
 
-  // Demo Login Quick Action
-  demoBtn.addEventListener('click', () => {
-    document.getElementById('auth-email').value = "marcus.vance@stocksense.io";
-    pwdInput.value = "demo2026";
-    store.login("marcus.vance@stocksense.io", "demo2026");
-    window.location.hash = '#dashboard';
+  toggleSignupPwdBtn.addEventListener('click', () => {
+    if (signupPasswordInput.type === 'password') {
+      signupPasswordInput.type = 'text';
+      signupPwdIcon.textContent = 'visibility_off';
+      signupPwdText.textContent = 'HIDE';
+    } else {
+      signupPasswordInput.type = 'password';
+      signupPwdIcon.textContent = 'visibility';
+      signupPwdText.textContent = 'SHOW';
+    }
   });
 
-  // Form Submission
-  authForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('auth-email').value;
-    const password = pwdInput.value;
+  // --- Sign Up Live / Blur Validations ---
+  signupLoginIdInput.addEventListener('blur', () => {
+    const val = signupLoginIdInput.value.trim();
+    if (val) {
+      const err = store.validateLoginId(val);
+      setFieldError(signupLoginIdInput, signupLoginIdError, err);
+    }
+  });
+  signupLoginIdInput.addEventListener('input', () => {
+    if (!signupLoginIdError.classList.contains('hidden')) {
+      const err = store.validateLoginId(signupLoginIdInput.value.trim());
+      setFieldError(signupLoginIdInput, signupLoginIdError, err);
+    }
+  });
 
-    const submitBtn = document.getElementById('auth-submit-btn');
+  signupEmailInput.addEventListener('blur', () => {
+    const val = signupEmailInput.value.trim();
+    if (val) {
+      const err = store.validateEmail(val);
+      setFieldError(signupEmailInput, signupEmailError, err);
+    }
+  });
+  signupEmailInput.addEventListener('input', () => {
+    if (!signupEmailError.classList.contains('hidden')) {
+      const err = store.validateEmail(signupEmailInput.value.trim());
+      setFieldError(signupEmailInput, signupEmailError, err);
+    }
+  });
+
+  signupPasswordInput.addEventListener('input', () => {
+    const val = signupPasswordInput.value;
+    if (val) {
+      const err = store.validatePassword(val);
+      setFieldError(signupPasswordInput, signupPasswordError, err);
+    } else {
+      setFieldError(signupPasswordInput, signupPasswordError, null);
+    }
+    // Also revalidate confirm password if it has value
+    if (signupConfirmPasswordInput.value) {
+      const confirmErr = store.validateConfirmPassword(val, signupConfirmPasswordInput.value);
+      setFieldError(signupConfirmPasswordInput, signupConfirmPasswordError, confirmErr);
+    }
+  });
+
+  signupConfirmPasswordInput.addEventListener('blur', () => {
+    const err = store.validateConfirmPassword(signupPasswordInput.value, signupConfirmPasswordInput.value);
+    setFieldError(signupConfirmPasswordInput, signupConfirmPasswordError, err);
+  });
+  signupConfirmPasswordInput.addEventListener('input', () => {
+    if (!signupConfirmPasswordError.classList.contains('hidden')) {
+      const err = store.validateConfirmPassword(signupPasswordInput.value, signupConfirmPasswordInput.value);
+      setFieldError(signupConfirmPasswordInput, signupConfirmPasswordError, err);
+    }
+  });
+
+  // --- Sign Up Submit Handler ---
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const loginId = signupLoginIdInput.value.trim();
+    const email = signupEmailInput.value.trim();
+    const password = signupPasswordInput.value;
+    const confirmPassword = signupConfirmPasswordInput.value;
+
+    const loginIdErr = store.validateLoginId(loginId);
+    const emailErr = store.validateEmail(email);
+    const passwordErr = store.validatePassword(password);
+    const confirmErr = store.validateConfirmPassword(password, confirmPassword);
+
+    setFieldError(signupLoginIdInput, signupLoginIdError, loginIdErr);
+    setFieldError(signupEmailInput, signupEmailError, emailErr);
+    setFieldError(signupPasswordInput, signupPasswordError, passwordErr);
+    setFieldError(signupConfirmPasswordInput, signupConfirmPasswordError, confirmErr);
+
+    if (loginIdErr || emailErr || passwordErr || confirmErr) {
+      return;
+    }
+
+    const res = store.signupUser({ loginId, email, password, confirmPassword });
+    if (!res.success) {
+      if (res.errors?.loginId) setFieldError(signupLoginIdInput, signupLoginIdError, res.errors.loginId);
+      if (res.errors?.email) setFieldError(signupEmailInput, signupEmailError, res.errors.email);
+      if (res.errors?.password) setFieldError(signupPasswordInput, signupPasswordError, res.errors.password);
+      if (res.errors?.confirmPassword) setFieldError(signupConfirmPasswordInput, signupConfirmPasswordError, res.errors.confirmPassword);
+      return;
+    }
+
+    // Success: Redirect to login tab (do not auto-login)
+    showToast("Account created successfully! Please sign in with your Login ID.", "success");
+    signupForm.reset();
+    clearSignupErrors();
+    setMode('login');
+    loginIdInput.value = loginId;
+    loginPasswordInput.focus();
+  });
+
+  // --- Login Submit Handler ---
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearLoginErrors();
+
+    const loginId = loginIdInput.value.trim();
+    const password = loginPasswordInput.value;
+
+    const res = store.loginUser(loginId, password);
+    if (!res.success) {
+      // Show exact spec error message: "Invalid Login Id or Password."
+      loginErrorMsg.textContent = res.error || "Invalid Login Id or Password.";
+      loginErrorMsg.classList.remove('hidden');
+      loginIdInput.classList.add('border-[#ba1a1a]');
+      loginPasswordInput.classList.add('border-[#ba1a1a]');
+      return;
+    }
+
+    const submitBtn = document.getElementById('btn-login-submit');
     submitBtn.disabled = true;
-    submitLabel.textContent = "AUTHENTICATING TELEMETRY...";
+    submitBtn.classList.remove('bg-[#b84328]');
+    submitBtn.classList.add('bg-[#536443]');
+    submitBtn.querySelector('span:last-child').textContent = "Signing In...";
 
     setTimeout(() => {
-      if (currentMode === 'signup') {
-        const name = document.getElementById('auth-name').value;
-        const zone = document.getElementById('auth-zone').value;
-        store.signup(name, email, password, zone);
-      } else {
-        store.login(email, password);
-      }
-      submitLabel.textContent = "ACCESS GRANTED";
-      submitBtn.classList.remove('bg-[#b84328]');
-      submitBtn.classList.add('bg-[#536443]');
-
-      setTimeout(() => {
-        window.location.hash = '#dashboard';
-      }, 400);
-    }, 500);
+      window.location.hash = '#dashboard';
+    }, 300);
   });
+
+  loginIdInput.addEventListener('input', clearLoginErrors);
+  loginPasswordInput.addEventListener('input', clearLoginErrors);
 
   // --- OTP Flow (P0.2) ---
   const step1 = document.getElementById('reset-step-1');
@@ -443,6 +624,7 @@ export function renderAuthView(container, initialTab = 'login') {
   const stepDesc = document.getElementById('otp-step-desc');
   const otpBanner = document.getElementById('otp-display-banner');
   const mockOtpCode = document.getElementById('mock-otp-code');
+  const btnCancelReset = document.getElementById('btn-cancel-reset');
 
   let resetEmailVal = "";
 
@@ -456,7 +638,7 @@ export function renderAuthView(container, initialTab = 'login') {
     step3.classList.add('hidden');
     otpBanner.classList.add('hidden');
     stepIndicator.textContent = "STEP 1 OF 3";
-    stepDesc.textContent = "Enter your registered operator dispatch email to receive a 6-digit OTP verification code.";
+    stepDesc.textContent = "Enter your registered email address to receive a 6-digit OTP verification code.";
   });
 
   btnCancelReset.addEventListener('click', () => {
@@ -497,25 +679,31 @@ export function renderAuthView(container, initialTab = 'login') {
     step2.classList.add('hidden');
     step3.classList.remove('hidden');
     stepIndicator.textContent = "STEP 3 OF 3";
-    stepDesc.textContent = "Identity verified! Set your new security access key for future terminal sessions.";
+    stepDesc.textContent = "Identity verified! Set your new password.";
   });
 
   // Step 3 -> Finish
   document.getElementById('btn-save-new-pwd').addEventListener('click', () => {
     const code = document.getElementById('reset-otp-input').value.trim();
     const newPwd = document.getElementById('reset-new-pwd').value;
-    const res = store.verifyResetOtp(resetEmailVal, code, newPwd);
+    const pwdErr = store.validatePassword(newPwd);
+    if (pwdErr) {
+      showToast(pwdErr, 'error');
+      return;
+    }
 
+    const res = store.verifyResetOtp(resetEmailVal, code, newPwd);
     if (!res.success) {
       showToast(res.error, 'error');
       return;
     }
 
-    showToast("Password updated successfully! Logging you in...", "success");
-    store.login(resetEmailVal, newPwd);
-    setTimeout(() => {
-      window.location.hash = '#dashboard';
-    }, 600);
+    showToast("Password updated successfully! Please sign in with your new password.", "success");
+    setMode('login');
+    const user = (store.state.users || []).find(u => (u.email || '').toLowerCase() === resetEmailVal.toLowerCase());
+    if (user) {
+      loginIdInput.value = user.loginId;
+    }
   });
 
   setMode(initialTab);

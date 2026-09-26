@@ -29,6 +29,18 @@ class StockSenseStore {
         if (!parsed.warehouses) parsed.warehouses = [...WAREHOUSES];
         if (!parsed.resetTokens) parsed.resetTokens = {};
         if (!parsed.credentials) parsed.credentials = {};
+        if (!parsed.users || !Array.isArray(parsed.users) || parsed.users.length === 0) {
+          parsed.users = [
+            {
+              loginId: "marcus12",
+              email: "marcus.vance@stocksense.io",
+              passwordHash: mockPasswordHash("DemoPass1@"),
+              badgeId: "OP-4982",
+              zone: "WH-01",
+              role: "Warehouse Specialist"
+            }
+          ];
+        }
         return parsed;
       }
     } catch (e) {
@@ -45,6 +57,16 @@ class StockSenseStore {
         terminal: "TRM-9842-DX",
         role: "CHIEF OPERATIONS CONTROLLER"
       },
+      users: [
+        {
+          loginId: "marcus12",
+          email: "marcus.vance@stocksense.io",
+          passwordHash: mockPasswordHash("DemoPass1@"),
+          badgeId: "OP-4982",
+          zone: "WH-01",
+          role: "Warehouse Specialist"
+        }
+      ],
       products: JSON.parse(JSON.stringify(INITIAL_PRODUCTS)),
       movements: JSON.parse(JSON.stringify(INITIAL_MOVEMENTS)),
       locations: [...LOCATIONS],
@@ -89,48 +111,144 @@ class StockSenseStore {
     }
   }
 
+  // --- Validation Methods ---
+  validateLoginId(loginId) {
+    const clean = (loginId || '').trim();
+    if (clean.length < 6 || clean.length > 12) {
+      return "Login ID must be 6–12 characters.";
+    }
+    const users = this.state.users || [];
+    const exists = users.some(u => (u.loginId || '').toLowerCase() === clean.toLowerCase());
+    if (exists) {
+      return "This Login ID is already taken.";
+    }
+    return null;
+  }
+
+  validateEmail(email) {
+    const clean = (email || '').trim().toLowerCase();
+    if (!clean || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) {
+      return "Please enter a valid email address.";
+    }
+    const users = this.state.users || [];
+    const exists = users.some(u => (u.email || '').toLowerCase() === clean);
+    if (exists) {
+      return "This email is already registered.";
+    }
+    return null;
+  }
+
+  validatePassword(password) {
+    const missing = [];
+    if (!password || password.length <= 8) {
+      missing.push("more than 8 characters");
+    }
+    if (!/[a-z]/.test(password || '')) {
+      missing.push("one lowercase letter");
+    }
+    if (!/[A-Z]/.test(password || '')) {
+      missing.push("one uppercase letter");
+    }
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`^]/.test(password || '')) {
+      missing.push("one special character");
+    }
+    if (missing.length > 0) {
+      return `Password must contain: ${missing.join(', ')}.`;
+    }
+    return null;
+  }
+
+  validateConfirmPassword(password, confirmPassword) {
+    if (password !== confirmPassword) {
+      return "Passwords do not match.";
+    }
+    return null;
+  }
+
   // --- Auth Actions ---
-  login(email, password, remember = true) {
-    const cleanEmail = (email || '').trim().toLowerCase();
-    if (!this.state.credentials) this.state.credentials = {};
-    if (password && !this.state.credentials[cleanEmail]) {
-      this.state.credentials[cleanEmail] = mockPasswordHash(password);
+  loginUser(loginId, password) {
+    const cleanId = (loginId || '').trim().toLowerCase();
+    const hash = mockPasswordHash(password || '');
+    const users = this.state.users || [];
+
+    const user = users.find(u => (u.loginId || '').toLowerCase() === cleanId);
+    if (!user || user.passwordHash !== hash) {
+      return { success: false, error: "Invalid Login Id or Password." };
     }
 
-    const user = {
-      name: cleanEmail.split('@')[0].replace('.', ' ').toUpperCase() || "DISPATCH OPERATOR",
-      email: cleanEmail,
-      badgeId: `OP-${Math.floor(1000 + Math.random() * 9000)}`,
-      zone: "WH-01",
+    const sessionUser = {
+      loginId: user.loginId,
+      name: user.loginId.toUpperCase(),
+      email: user.email,
+      badgeId: user.badgeId || `OP-${Math.floor(1000 + Math.random() * 9000)}`,
+      zone: user.zone || "WH-01",
       secLevel: "SEC_LVL_04",
       terminal: "TRM-9842-DX",
-      role: "DEPOT DISPATCH SPECIALIST"
+      role: user.role || "Warehouse Specialist"
     };
-    this.state.user = user;
-    this.notify('auth:login', user);
-    return user;
+
+    this.state.user = sessionUser;
+    this.notify('auth:login', sessionUser);
+    return { success: true, user: sessionUser };
+  }
+
+  signupUser({ loginId, email, password, confirmPassword }) {
+    const loginIdError = this.validateLoginId(loginId);
+    const emailError = this.validateEmail(email);
+    const passwordError = this.validatePassword(password);
+    const confirmError = this.validateConfirmPassword(password, confirmPassword);
+
+    if (loginIdError || emailError || passwordError || confirmError) {
+      return {
+        success: false,
+        errors: {
+          loginId: loginIdError,
+          email: emailError,
+          password: passwordError,
+          confirmPassword: confirmError
+        }
+      };
+    }
+
+    const newUser = {
+      loginId: loginId.trim(),
+      email: email.trim().toLowerCase(),
+      passwordHash: mockPasswordHash(password),
+      badgeId: `OP-${Math.floor(1000 + Math.random() * 9000)}`,
+      createdAt: new Date().toISOString(),
+      zone: "WH-01",
+      role: "Warehouse Specialist"
+    };
+
+    if (!this.state.users) this.state.users = [];
+    this.state.users.push(newUser);
+    this.saveState();
+
+    return { success: true, user: newUser };
+  }
+
+  login(loginIdOrEmail, password, remember = true) {
+    const res = this.loginUser(loginIdOrEmail, password);
+    if (res.success) return res.user;
+
+    const users = this.state.users || [];
+    const clean = (loginIdOrEmail || '').trim().toLowerCase();
+    const userByEmail = users.find(u => (u.email || '').toLowerCase() === clean);
+    if (userByEmail && userByEmail.passwordHash === mockPasswordHash(password || '')) {
+      return this.loginUser(userByEmail.loginId, password).user;
+    }
+    return null;
   }
 
   signup(name, email, password, zone = "WH-01") {
     const cleanEmail = (email || '').trim().toLowerCase();
-    if (!this.state.credentials) this.state.credentials = {};
-    if (password) {
-      this.state.credentials[cleanEmail] = mockPasswordHash(password);
+    const loginId = (name || cleanEmail.split('@')[0] || "user12").toLowerCase().replace(/[^a-z0-9]/g, '').padEnd(6, '0').slice(0, 12);
+    const res = this.signupUser({ loginId, email: cleanEmail, password, confirmPassword: password });
+    if (res.success) {
+      this.loginUser(loginId, password);
+      return this.state.user;
     }
-
-    const user = {
-      name: (name || "DEPOT OPERATOR").toUpperCase(),
-      email: cleanEmail,
-      badgeId: `OP-${Math.floor(1000 + Math.random() * 9000)}`,
-      zone: zone || "WH-01",
-      secLevel: "SEC_LVL_02",
-      terminal: `TRM-${zone}-DX`,
-      role: "CERTIFIED WAREHOUSE SPECIALIST"
-    };
-    this.state.user = user;
-    this.state.currentZone = zone;
-    this.notify('auth:signup', user);
-    return user;
+    return null;
   }
 
   logout() {
