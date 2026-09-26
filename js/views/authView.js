@@ -166,8 +166,25 @@ export function renderAuthView(container, initialTab = 'login') {
                     <div id="login-password-error" class="text-[11px] font-mono text-[#ba1a1a] font-bold hidden"></div>
                   </div>
 
+                  <!-- Demo Credentials Quick Helper Box -->
+                  <div class="p-2.5 bg-[#efe9dc] border border-[#cfc5b4] font-mono text-[11px] text-[#58413c] flex flex-col gap-1 select-none">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-[#262421] uppercase flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 bg-[#536443] inline-block"></span>
+                        <span>DEMO CREDENTIALS:</span>
+                      </span>
+                      <button type="button" id="btn-fill-demo" class="text-[#b84328] hover:underline font-bold uppercase cursor-pointer">
+                        [ AUTO-FILL ]
+                      </button>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[10px]">
+                      <span>Login ID: <strong class="text-[#262421]">demo_admin</strong></span>
+                      <span>Password: <strong class="text-[#262421]">StockSense2026!</strong></span>
+                    </div>
+                  </div>
+
                   <!-- Submit Button: "Sign In" -->
-                  <div class="pt-2">
+                  <div class="pt-1">
                     <button id="btn-login-submit" type="submit"
                       class="w-full py-3 px-6 rounded-none bg-[#b84328] hover:bg-[#972b12] text-white font-mono text-sm font-bold uppercase tracking-wider shadow-sm transform -rotate-[0.5deg] hover:rotate-0 active:translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer">
                       <span class="material-symbols-outlined text-[18px]">login</span>
@@ -462,6 +479,17 @@ export function renderAuthView(container, initialTab = 'login') {
   altBtn.addEventListener('click', () => setMode(currentMode === 'login' ? 'signup' : 'login'));
   linkGotoSignup.addEventListener('click', () => setMode('signup'));
   linkGotoLogin.addEventListener('click', () => setMode('login'));
+
+  // Quick Auto-Fill Demo Credentials
+  const btnFillDemo = document.getElementById('btn-fill-demo');
+  if (btnFillDemo) {
+    btnFillDemo.addEventListener('click', () => {
+      loginIdInput.value = "demo_admin";
+      loginPasswordInput.value = "StockSense2026!";
+      clearLoginErrors();
+      showToast("Demo credentials loaded.", "info");
+    });
+  }
 
   // Password Show / Hide Toggles
   toggleLoginPwdBtn.addEventListener('click', () => {

@@ -13,6 +13,26 @@ function mockPasswordHash(plain) {
   return 'SS_HASH_' + Math.abs(hash).toString(36) + '_' + btoa(plain).split('').reverse().join('');
 }
 
+// Demo users list for testing and evaluation
+export const INITIAL_USERS = [
+  {
+    loginId: "demo_admin",
+    email: "demo@stocksense.io",
+    passwordHash: mockPasswordHash("StockSense2026!"),
+    badgeId: "OP-1001",
+    zone: "WH-01",
+    role: "Chief Operations Controller"
+  },
+  {
+    loginId: "marcus12",
+    email: "marcus.vance@stocksense.io",
+    passwordHash: mockPasswordHash("DemoPass1@"),
+    badgeId: "OP-4982",
+    zone: "WH-01",
+    role: "Warehouse Specialist"
+  }
+];
+
 class StockSenseStore {
   constructor() {
     this.listeners = new Map();
@@ -30,16 +50,13 @@ class StockSenseStore {
         if (!parsed.resetTokens) parsed.resetTokens = {};
         if (!parsed.credentials) parsed.credentials = {};
         if (!parsed.users || !Array.isArray(parsed.users) || parsed.users.length === 0) {
-          parsed.users = [
-            {
-              loginId: "marcus12",
-              email: "marcus.vance@stocksense.io",
-              passwordHash: mockPasswordHash("DemoPass1@"),
-              badgeId: "OP-4982",
-              zone: "WH-01",
-              role: "Warehouse Specialist"
+          parsed.users = JSON.parse(JSON.stringify(INITIAL_USERS));
+        } else {
+          for (const defUser of INITIAL_USERS) {
+            if (!parsed.users.some(u => (u.loginId || '').toLowerCase() === defUser.loginId.toLowerCase())) {
+              parsed.users.push(defUser);
             }
-          ];
+          }
         }
         return parsed;
       }
@@ -49,24 +66,16 @@ class StockSenseStore {
 
     return {
       user: {
-        name: "MARCUS VANCE",
-        email: "marcus.vance@stocksense.io",
-        badgeId: "OP-4982",
+        name: "DEMO ADMIN",
+        loginId: "demo_admin",
+        email: "demo@stocksense.io",
+        badgeId: "OP-1001",
         zone: "WH-01",
         secLevel: "SEC_LVL_04",
         terminal: "TRM-9842-DX",
-        role: "CHIEF OPERATIONS CONTROLLER"
+        role: "Chief Operations Controller"
       },
-      users: [
-        {
-          loginId: "marcus12",
-          email: "marcus.vance@stocksense.io",
-          passwordHash: mockPasswordHash("DemoPass1@"),
-          badgeId: "OP-4982",
-          zone: "WH-01",
-          role: "Warehouse Specialist"
-        }
-      ],
+      users: JSON.parse(JSON.stringify(INITIAL_USERS)),
       products: JSON.parse(JSON.stringify(INITIAL_PRODUCTS)),
       movements: JSON.parse(JSON.stringify(INITIAL_MOVEMENTS)),
       locations: [...LOCATIONS],
