@@ -3,6 +3,16 @@ import { INITIAL_PRODUCTS, INITIAL_MOVEMENTS, WAREHOUSES, LOCATIONS, ZONES } fro
 
 const STORAGE_KEY = 'stocksense_state_v2.5';
 
+// Demo-level password hash (P2.12 - does not persist plaintext)
+function mockPasswordHash(plain) {
+  if (!plain) return '';
+  let hash = 5381;
+  for (let i = 0; i < plain.length; i++) {
+    hash = ((hash << 5) + hash) + plain.charCodeAt(i);
+  }
+  return 'SS_HASH_' + Math.abs(hash).toString(36) + '_' + btoa(plain).split('').reverse().join('');
+}
+
 class StockSenseStore {
   constructor() {
     this.listeners = new Map();
@@ -18,6 +28,7 @@ class StockSenseStore {
         if (!parsed.locations) parsed.locations = [...LOCATIONS];
         if (!parsed.warehouses) parsed.warehouses = [...WAREHOUSES];
         if (!parsed.resetTokens) parsed.resetTokens = {};
+        if (!parsed.credentials) parsed.credentials = {};
         return parsed;
       }
     } catch (e) {
@@ -80,9 +91,15 @@ class StockSenseStore {
 
   // --- Auth Actions ---
   login(email, password, remember = true) {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!this.state.credentials) this.state.credentials = {};
+    if (password && !this.state.credentials[cleanEmail]) {
+      this.state.credentials[cleanEmail] = mockPasswordHash(password);
+    }
+
     const user = {
-      name: email.split('@')[0].replace('.', ' ').toUpperCase() || "DISPATCH OPERATOR",
-      email: email,
+      name: cleanEmail.split('@')[0].replace('.', ' ').toUpperCase() || "DISPATCH OPERATOR",
+      email: cleanEmail,
       badgeId: `OP-${Math.floor(1000 + Math.random() * 9000)}`,
       zone: "WH-01",
       secLevel: "SEC_LVL_04",
@@ -95,9 +112,15 @@ class StockSenseStore {
   }
 
   signup(name, email, password, zone = "WH-01") {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!this.state.credentials) this.state.credentials = {};
+    if (password) {
+      this.state.credentials[cleanEmail] = mockPasswordHash(password);
+    }
+
     const user = {
       name: (name || "DEPOT OPERATOR").toUpperCase(),
-      email: email,
+      email: cleanEmail,
       badgeId: `OP-${Math.floor(1000 + Math.random() * 9000)}`,
       zone: zone || "WH-01",
       secLevel: "SEC_LVL_02",
@@ -164,8 +187,10 @@ class StockSenseStore {
       return { success: false, error: "Password must be at least 6 characters long." };
     }
 
-    // Success: Clear token & update user password record
+    // Success: Clear token & update user password record hash (P2.12)
     delete this.state.resetTokens[cleanEmail];
+    if (!this.state.credentials) this.state.credentials = {};
+    this.state.credentials[cleanEmail] = mockPasswordHash(newPassword);
     this.saveState();
     this.notify('auth:passwordReset', { email: cleanEmail });
     return { success: true };
@@ -234,11 +259,29 @@ class StockSenseStore {
 
     product.stock = totalStock;
 
+    const threshold = Number(product.safetyThreshold) || Number(product.minStock) || 10;
+    product.safetyThreshold = threshold;
+    product.minStock = threshold;
+
     if (totalStock <= 0) product.status = "OUT";
-    else if (totalStock <= (product.safetyThreshold || 10)) product.status = "LOW";
+    else if (totalStock <= threshold) product.status = "LOW";
     else product.status = "IN_STOCK";
 
+    // P2: Reordering Rules calculation
+    const targetStock = product.reorderQty ? Number(product.reorderQty) : (threshold * 2);
+    product.suggestedReorder = (totalStock <= threshold) ? Math.max(0, targetStock - totalStock) : 0;
+
     return product;
+  }
+
+  // P2: Warehouse stock isolation helper
+  getWarehouseStock(sku, warehouseId = this.state.currentZone) {
+    const prod = this.getProductBySku(sku);
+    if (!prod || !prod.locations) return 0;
+    const locsInWh = new Set(this.getLocations(warehouseId).map(l => l.id));
+    return Object.entries(prod.locations)
+      .filter(([locId]) => locsInWh.has(locId))
+      .reduce((sum, [, qty]) => sum + (Number(qty) || 0), 0);
   }
 
   getProductBySku(sku) {

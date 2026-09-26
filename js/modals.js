@@ -37,6 +37,55 @@ export function showToast(message, type = 'info') {
   }, 4500);
 }
 
+// In-App Kraft Ledger Confirmation Modal (P2.11)
+export function showConfirmModal({ title = 'CONFIRM ACTION', message, confirmText = 'CONFIRM', cancelText = 'CANCEL', onConfirm, onCancel }) {
+  const modal = document.createElement('div');
+  modal.className = "fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop";
+  modal.innerHTML = `
+    <div class="relative w-full max-w-md bg-white border-2 border-[#cfc5b4] shadow-2xl p-6 font-mono text-xs animate-fadeIn">
+      <div class="flex items-center justify-between pb-3 border-b-2 border-dashed border-[#cfc5b4] mb-4">
+        <div class="flex items-center gap-2">
+          <span class="rubber-stamp text-[10px] px-1.5 py-0.5 border border-[#b84328] text-[#b84328] font-bold">CONFIRMATION</span>
+          <span class="font-bold text-sm text-[#262421] uppercase">${title}</span>
+        </div>
+        <button id="confirm-modal-close" class="text-[#565145] hover:text-[#b84328] text-base font-bold cursor-pointer">✕</button>
+      </div>
+
+      <div class="p-4 bg-[#faf7f0] border border-[#cfc5b4] mb-5 text-[#262421] leading-relaxed font-bold">
+        ${message}
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-dashed border-[#cfc5b4]">
+        <button type="button" id="confirm-modal-cancel" class="px-4 py-2 border border-[#cfc5b4] bg-[#efe9dc] text-[#565145] font-bold uppercase cursor-pointer hover:bg-[#e4ddce]">
+          ${cancelText}
+        </button>
+        <button type="button" id="confirm-modal-ok" class="px-5 py-2 bg-[#b84328] hover:bg-[#972b12] text-white font-bold uppercase cursor-pointer shadow-kraft-dark">
+          ${confirmText}
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const cleanup = () => {
+    modal.remove();
+  };
+
+  modal.querySelector('#confirm-modal-close').addEventListener('click', () => {
+    cleanup();
+    if (onCancel) onCancel();
+  });
+  modal.querySelector('#confirm-modal-cancel').addEventListener('click', () => {
+    cleanup();
+    if (onCancel) onCancel();
+  });
+  modal.querySelector('#confirm-modal-ok').addEventListener('click', () => {
+    cleanup();
+    if (onConfirm) onConfirm();
+  });
+}
+
 // 1. Add / Edit Product Modal (P0.3, P1.4)
 export function openAddProductModal(editProduct = null) {
   closeModal();
@@ -527,12 +576,18 @@ export function openMovementDetailModal(movementId) {
 
   // Cancel order
   modal.querySelector('#btn-cancel-mov')?.addEventListener('click', () => {
-    if (confirm('Cancel this operational order? It cannot be undone.')) {
-      store.cancelMovement(mov.id);
-      showToast(`Order ${mov.reference || mov.id} has been canceled.`, 'error');
-      closeModal();
-      window.location.hash = '#operations';
-    }
+    showConfirmModal({
+      title: 'CANCEL ORDER MANIFEST',
+      message: `Are you sure you want to cancel operation ${mov.reference || mov.id}? This will flag the manifest as CANCELED and lock modifications.`,
+      confirmText: 'YES, CANCEL MANIFEST',
+      cancelText: 'RETURN',
+      onConfirm: () => {
+        store.cancelMovement(mov.id);
+        showToast(`Order ${mov.reference || mov.id} has been canceled.`, 'error');
+        closeModal();
+        window.location.hash = '#operations';
+      }
+    });
   });
 
   // Validate order

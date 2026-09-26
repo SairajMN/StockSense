@@ -3,9 +3,19 @@ import { store } from './store.js';
 import { renderAuthView } from './views/authView.js';
 import { renderDashboardView } from './views/dashboardView.js';
 import { renderProductsView } from './views/productsView.js';
+import { renderStockView } from './views/stockView.js';
 import { renderOperationsView } from './views/operationsView.js';
 import { renderSettingsView } from './views/settingsView.js';
-import { openAddProductModal, openAdjustStockModal, openCycleCountModal, openProfileModal } from './modals.js';
+import {
+  openAddProductModal,
+  openAdjustStockModal,
+  openTransferStockModal,
+  openMovementDetailModal,
+  openCycleCountModal,
+  openProfileModal,
+  closeModal,
+  showToast
+} from './modals.js';
 
 class StockSenseApp {
   constructor() {
@@ -20,7 +30,10 @@ class StockSenseApp {
 
     // Custom modal event listeners
     window.addEventListener('open-add-product', () => openAddProductModal());
+    window.addEventListener('open-edit-product', (e) => openAddProductModal(e.detail?.product));
     window.addEventListener('open-adjust-stock', (e) => openAdjustStockModal(e.detail));
+    window.addEventListener('open-transfer-stock', (e) => openTransferStockModal(e.detail));
+    window.addEventListener('open-movement-detail', (e) => openMovementDetailModal(e.detail?.id));
     window.addEventListener('open-cycle-count', () => openCycleCountModal());
     window.addEventListener('open-profile', () => openProfileModal());
 
@@ -121,6 +134,11 @@ class StockSenseApp {
               <span class="uppercase tracking-wider">Products</span>
             </a>
 
+            <a href="#stock" id="nav-stock" class="flex items-center gap-3 px-4 py-2.5 transition-colors border-l-4 font-bold">
+              <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+              <span class="uppercase tracking-wider">Stock</span>
+            </a>
+
             <a href="#operations" id="nav-operations" class="flex items-center gap-3 px-4 py-2.5 transition-colors border-l-4 font-bold">
               <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" stroke-linecap="square"></path>
@@ -219,9 +237,9 @@ class StockSenseApp {
           const sku = scanInp.value.trim();
           const prod = store.getProductBySku(sku);
           if (prod) {
-            alert(`SKU Located: ${prod.sku}\nName: ${prod.name}\nStock: ${prod.stock} units in ${prod.zone} [${prod.bin}]`);
+            showToast(`SKU ${prod.sku}: ${prod.name} | ${prod.stock} ${prod.uom || 'units'} in ${prod.zone} [${prod.bin}]`, 'success');
           } else {
-            alert(`SKU or Barcode "${sku}" not found in current catalog.`);
+            showToast(`SKU or Barcode "${sku}" not found in current catalog.`, 'error');
           }
         }
       });
@@ -241,6 +259,9 @@ class StockSenseApp {
       case 'products':
         renderProductsView(viewContainer);
         break;
+      case 'stock':
+        renderStockView(viewContainer);
+        break;
       case 'operations':
         renderOperationsView(viewContainer);
         break;
@@ -254,7 +275,7 @@ class StockSenseApp {
   }
 
   updateActiveNav(route) {
-    const navItems = ['dashboard', 'products', 'operations', 'settings'];
+    const navItems = ['dashboard', 'products', 'stock', 'operations', 'settings'];
     navItems.forEach(item => {
       const el = document.getElementById(`nav-${item}`);
       if (!el) return;

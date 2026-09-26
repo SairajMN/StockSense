@@ -1,6 +1,7 @@
 // StockSense Products & Inventory Master Catalog View (Screen 3)
 import { store } from '../store.js';
 import { CATEGORIES, ZONES } from '../data.js';
+import { showConfirmModal, showToast } from '../modals.js';
 
 export function renderProductsView(container) {
   const metrics = store.getMetrics();
@@ -402,6 +403,11 @@ function renderProductsTableHtml(products) {
                     ${p.stock} <span class="text-[10px] text-[#8c716b] uppercase">${p.uom || 'units'}</span>
                   </div>
                   <div class="text-[10px] text-[#8c716b]">MIN: ${p.safetyThreshold} ${p.uom || 'units'}</div>
+                  ${(p.stock <= p.safetyThreshold) ? `
+                    <div class="mt-1 inline-block text-[9px] font-bold text-[#b84328] bg-[#ffdad2]/40 border border-[#b84328]/30 px-1 py-0.5">
+                      REORDER: +${p.suggestedReorder || Math.max(1, (p.safetyThreshold * 2) - p.stock)} ${p.uom || 'units'}
+                    </div>
+                  ` : ''}
                 </td>
                 <td class="py-3 px-4 text-center whitespace-nowrap">
                   <span class="inline-block px-2 py-0.5 text-[10px] font-bold border ${statusBadge} uppercase tracking-wider">
@@ -596,14 +602,21 @@ function initProductsEvents(container) {
     });
   });
 
-  // Delete product handler (P1.4)
+  // Delete product handler (P1.4, P2.11)
   container.querySelectorAll('.btn-delete-prod').forEach(btn => {
     btn.addEventListener('click', () => {
       const sku = btn.getAttribute('data-sku');
-      if (confirm(`Are you sure you want to permanently delete SKU "${sku}" from the catalog? This will affect current stock counts.`)) {
-        store.deleteProduct(sku);
-        renderProductsView(container);
-      }
+      showConfirmModal({
+        title: 'DELETE PRODUCT SKU',
+        message: `Are you sure you want to permanently delete SKU "${sku}" from the catalog? This will remove all associated location balances.`,
+        confirmText: 'YES, DELETE SKU',
+        cancelText: 'CANCEL',
+        onConfirm: () => {
+          store.deleteProduct(sku);
+          showToast(`Product SKU ${sku} deleted from catalog.`, 'info');
+          renderProductsView(container);
+        }
+      });
     });
   });
 

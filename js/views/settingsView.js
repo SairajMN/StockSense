@@ -1,6 +1,6 @@
 // StockSense System Settings, Warehouses & Locations Configuration (P1.6)
 import { store } from '../store.js';
-import { showToast } from '../modals.js';
+import { showToast, showConfirmModal } from '../modals.js';
 
 export function renderSettingsView(container) {
   const user = store.state.user || {
@@ -322,20 +322,32 @@ export function renderSettingsView(container) {
     }
 
     container.querySelector('#btn-reset-demo')?.addEventListener('click', () => {
-      if (confirm('Restore demo inventory catalog and movement logs?')) {
-        store.resetToDemo();
-        showToast('Demo inventory restored.', 'success');
-        render();
-      }
+      showConfirmModal({
+        title: 'RESTORE DEMO DATABASE',
+        message: 'Are you sure you want to restore the default demo inventory catalog and movement logs? Any newly entered records will be reset to factory demo state.',
+        confirmText: 'RESTORE DEMO DATA',
+        cancelText: 'CANCEL',
+        onConfirm: () => {
+          store.resetToDemo();
+          showToast('Demo inventory restored.', 'success');
+          render();
+        }
+      });
     });
 
     container.querySelector('#btn-purge-empty')?.addEventListener('click', () => {
-      if (confirm('Clear catalog and movements to view the exact empty prototype state?')) {
-        store.state.emptyMode = true;
-        store.saveState();
-        showToast('System set to pure empty state.', 'info');
-        render();
-      }
+      showConfirmModal({
+        title: 'PURGE TO EMPTY STATE',
+        message: 'Clear all catalog products and movements to view the exact empty prototype zero-state?',
+        confirmText: 'PURGE ALL RECORDS',
+        cancelText: 'CANCEL',
+        onConfirm: () => {
+          store.state.emptyMode = true;
+          store.saveState();
+          showToast('System set to pure empty state.', 'info');
+          render();
+        }
+      });
     });
 
     container.querySelector('#btn-export-full-db')?.addEventListener('click', () => {
