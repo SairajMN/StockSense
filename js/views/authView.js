@@ -108,11 +108,11 @@ export function renderAuthView(container, initialTab = 'login') {
             <div id="tabs-container" class="relative z-10 flex items-end justify-start px-2 gap-1 font-mono text-xs">
               <button id="tab-btn-login" class="px-5 py-2 rounded-t-sm font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer">
                 <span class="w-2 h-2 rounded-full inline-block"></span>
-                <span>[ Sign In ]</span>
+                <span>[ LOG IN ]</span>
               </button>
               <button id="tab-btn-signup" class="px-5 py-2 rounded-t-sm font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer">
                 <span class="w-2 h-2 rounded-full inline-block"></span>
-                <span>[ Sign Up ]</span>
+                <span>[ SIGN UP ]</span>
               </button>
             </div>
 
@@ -129,7 +129,7 @@ export function renderAuthView(container, initialTab = 'login') {
               <div id="auth-main-panel">
                 <!-- Header Block -->
                 <div class="flex flex-col pb-4 mb-5 border-b border-[#cfc5b4]/60">
-                  <h2 id="auth-form-title" class="font-mono text-2xl font-bold uppercase text-[#262421] tracking-tight">SIGN IN</h2>
+                  <h2 id="auth-form-title" class="font-mono text-2xl font-bold uppercase text-[#262421] tracking-tight">LOG IN</h2>
                   <p id="auth-form-subtitle" class="font-body text-sm text-[#58413c] mt-1">Enter your credentials to access your account.</p>
                 </div>
 
@@ -166,29 +166,12 @@ export function renderAuthView(container, initialTab = 'login') {
                     <div id="login-password-error" class="text-[11px] font-mono text-[#ba1a1a] font-bold hidden"></div>
                   </div>
 
-                  <!-- Demo Credentials Quick Helper Box -->
-                  <div class="p-2.5 bg-[#efe9dc] border border-[#cfc5b4] font-mono text-[11px] text-[#58413c] flex flex-col gap-1 select-none">
-                    <div class="flex items-center justify-between">
-                      <span class="font-bold text-[#262421] uppercase flex items-center gap-1">
-                        <span class="w-1.5 h-1.5 bg-[#536443] inline-block"></span>
-                        <span>DEMO CREDENTIALS:</span>
-                      </span>
-                      <button type="button" id="btn-fill-demo" class="text-[#b84328] hover:underline font-bold uppercase cursor-pointer">
-                        [ AUTO-FILL ]
-                      </button>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[10px]">
-                      <span>Login ID: <strong class="text-[#262421]">demo_admin</strong></span>
-                      <span>Password: <strong class="text-[#262421]">StockSense2026!</strong></span>
-                    </div>
-                  </div>
-
-                  <!-- Submit Button: "Sign In" -->
+                  <!-- Submit Button: "Log In" -->
                   <div class="pt-1">
                     <button id="btn-login-submit" type="submit"
                       class="w-full py-3 px-6 rounded-none bg-[#b84328] hover:bg-[#972b12] text-white font-mono text-sm font-bold uppercase tracking-wider shadow-sm transform -rotate-[0.5deg] hover:rotate-0 active:translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer">
                       <span class="material-symbols-outlined text-[18px]">login</span>
-                      <span>Sign In</span>
+                      <span>Log In</span>
                     </button>
                   </div>
 
@@ -264,7 +247,7 @@ export function renderAuthView(container, initialTab = 'login') {
                   <div class="text-center pt-2 border-t border-dashed border-[#cfc5b4]/60 font-mono text-xs text-[#58413c]">
                     Already have an account?
                     <button type="button" id="link-goto-login" class="text-[#b84328] font-bold hover:underline uppercase cursor-pointer ml-1">
-                      Sign In
+                      Log In
                     </button>
                   </div>
                 </form>
@@ -328,13 +311,13 @@ export function renderAuthView(container, initialTab = 'login') {
                       class="w-full bg-[#fdf9f4] border border-[#cfc5b4] p-2.5 text-[#262421] font-bold tracking-widest focus:border-[#b84328] focus:outline-none" />
                   </div>
                   <button id="btn-save-new-pwd" class="w-full py-2.5 bg-[#b84328] hover:bg-[#972b12] text-white font-bold uppercase tracking-wider cursor-pointer">
-                    UPDATE PASSWORD &amp; SIGN IN
+                    UPDATE PASSWORD &amp; LOG IN
                   </button>
                 </div>
 
                 <div class="mt-4 pt-3 border-t border-dashed border-[#cfc5b4] flex items-center justify-between text-xs font-mono">
                   <button id="btn-cancel-reset" class="text-[#565145] hover:text-[#b84328] font-bold uppercase cursor-pointer">
-                    ← RETURN TO SIGN IN
+                    ← RETURN TO LOG IN
                   </button>
                 </div>
               </div>
@@ -426,7 +409,7 @@ export function renderAuthView(container, initialTab = 'login') {
       formTitle.textContent = "SIGN UP";
       formSubtitle.textContent = "Fill in your details below to create your account.";
       altText.textContent = "Already have an account?";
-      altBtn.textContent = "Sign In";
+      altBtn.textContent = "Log In";
     } else {
       tabLogin.className = "px-5 py-2 rounded-t-sm font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer bg-white text-[#b84328] shadow-sm border-t border-l border-r border-[#cfc5b4]";
       tabLogin.querySelector('span:first-child').className = "w-2 h-2 rounded-full inline-block bg-[#b84328]";
@@ -437,7 +420,7 @@ export function renderAuthView(container, initialTab = 'login') {
       signupForm.classList.add('hidden');
       loginForm.classList.remove('hidden');
 
-      formTitle.textContent = "SIGN IN";
+      formTitle.textContent = "LOG IN";
       formSubtitle.textContent = "Enter your credentials to access your account.";
       altText.textContent = "Don't have an account?";
       altBtn.textContent = "Sign Up";
@@ -479,17 +462,6 @@ export function renderAuthView(container, initialTab = 'login') {
   altBtn.addEventListener('click', () => setMode(currentMode === 'login' ? 'signup' : 'login'));
   linkGotoSignup.addEventListener('click', () => setMode('signup'));
   linkGotoLogin.addEventListener('click', () => setMode('login'));
-
-  // Quick Auto-Fill Demo Credentials
-  const btnFillDemo = document.getElementById('btn-fill-demo');
-  if (btnFillDemo) {
-    btnFillDemo.addEventListener('click', () => {
-      loginIdInput.value = "demo_admin";
-      loginPasswordInput.value = "StockSense2026!";
-      clearLoginErrors();
-      showToast("Demo credentials loaded.", "info");
-    });
-  }
 
   // Password Show / Hide Toggles
   toggleLoginPwdBtn.addEventListener('click', () => {
@@ -604,7 +576,7 @@ export function renderAuthView(container, initialTab = 'login') {
     }
 
     // Success: Redirect to login tab (do not auto-login)
-    showToast("Account created successfully! Please sign in with your Login ID.", "success");
+    showToast("Account created successfully! Please log in with your Login ID.", "success");
     signupForm.reset();
     clearSignupErrors();
     setMode('login');

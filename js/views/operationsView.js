@@ -206,10 +206,14 @@ export function renderOperationsView(container) {
           <span class="text-[#565145]">CLICK ANY ROW TO EXPAND LINE ITEMS OR PRINT</span>
         </div>
 
-        <div class="divide-y divide-[#cfc5b4]">
           ${groupList.length === 0 ? `
-            <div class="py-12 text-center font-mono text-xs text-[#565145]">
-              No movements match the current filter criteria.
+            <div class="py-12 px-4 text-center font-mono text-xs text-[#565145] flex flex-col items-center justify-center gap-3 bg-white">
+              <span class="material-symbols-outlined text-[40px] text-[#565145]">swap_horiz</span>
+              <div class="text-sm font-bold uppercase text-[#262421]">NO OPERATIONAL MOVEMENTS RECORDED</div>
+              <p class="font-body text-xs text-[#565145] max-w-sm">No inventory movements, intake receipts, or outbound dispatches have been registered yet.</p>
+              <button id="btn-empty-log-movement" class="mt-1 px-4 py-2 bg-[#b84328] hover:bg-[#972b12] text-white font-mono text-xs font-bold uppercase shadow-kraft cursor-pointer">
+                + LOG A MOVEMENT
+              </button>
             </div>
           ` : groupList.map(grp => {
             const isDone = grp.status === 'DONE';
@@ -391,6 +395,10 @@ export function renderOperationsView(container) {
 
     // Quick Action Buttons
     container.querySelector('#btn-new-movement')?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('open-adjust-stock'));
+    });
+
+    container.querySelector('#btn-empty-log-movement')?.addEventListener('click', () => {
       window.dispatchEvent(new CustomEvent('open-adjust-stock'));
     });
 

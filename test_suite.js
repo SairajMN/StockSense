@@ -25,8 +25,8 @@ class LocalStorageMock {
 global.localStorage = new LocalStorageMock();
 
 // Dynamic import of store
-const { store } = await import('../../../../../Desktop/StockSense/js/store.js');
-const { INITIAL_PRODUCTS, LOCATIONS, WAREHOUSES } = await import('../../../../../Desktop/StockSense/js/data.js');
+const { store } = await import('./js/store.js');
+const { INITIAL_PRODUCTS, LOCATIONS, WAREHOUSES } = await import('./js/data.js');
 
 let testsPassed = 0;
 let testsFailed = 0;

@@ -55,34 +55,48 @@ export function renderStockView(container) {
         </div>
       </div>
 
-      <!-- Editable Stock Ledger Table -->
-      <div class="bg-[#faf7f0] border border-[#cfc5b4] relative overflow-hidden shadow-kraft">
-        <div class="px-4 py-2.5 bg-[#efe9dc] border-b border-dashed border-[#cfc5b4] flex items-center justify-between font-mono text-xs text-[#565145]">
-          <div class="flex items-center gap-3">
-            <span>RULE: <strong class="text-[#262421]">FREE TO USE = ON HAND - RESERVED DELIVERIES</strong></span>
-            <span>•</span>
-            <span>PRESS <strong class="text-[#b84328]">[ENTER]</strong> OR BLUR TO POST INLINE EDITS</span>
+      <!-- Editable Stock Ledger Table or Empty State -->
+      ${products.length === 0 ? `
+        <div class="py-16 px-6 flex flex-col items-center justify-center text-center bg-white border border-[#cfc5b4] shadow-kraft">
+          <div class="w-16 h-16 border-2 border-dashed border-[#b84328]/60 bg-[#efe9dc] flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-[#b84328] text-[32px]">inventory_2</span>
           </div>
-          <span class="font-bold text-[#536443]">AUDIT STAMP: REAL-TIME</span>
+          <div class="font-mono text-xl uppercase tracking-wider text-[#262421] mb-2 font-bold">NO INVENTORY RECORDS IN LEDGER</div>
+          <p class="font-body text-xs text-[#565145] max-w-md mb-5 leading-relaxed">
+            No inventory units recorded in catalog. Add products to populate this on-hand stock ledger.
+          </p>
+          <a href="#products" class="px-5 py-2 bg-[#b84328] hover:bg-[#972b12] text-white font-mono text-xs font-bold uppercase tracking-wider shadow-kraft-dark">
+            GO TO PRODUCTS CATALOG
+          </a>
         </div>
+      ` : `
+        <div class="bg-[#faf7f0] border border-[#cfc5b4] relative overflow-hidden shadow-kraft">
+          <div class="px-4 py-2.5 bg-[#efe9dc] border-b border-dashed border-[#cfc5b4] flex items-center justify-between font-mono text-xs text-[#565145]">
+            <div class="flex items-center gap-3">
+              <span>RULE: <strong class="text-[#262421]">FREE TO USE = ON HAND - RESERVED DELIVERIES</strong></span>
+              <span>•</span>
+              <span>PRESS <strong class="text-[#b84328]">[ENTER]</strong> OR BLUR TO POST INLINE EDITS</span>
+            </div>
+            <span class="font-bold text-[#536443]">AUDIT STAMP: REAL-TIME</span>
+          </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left font-mono text-xs border-collapse">
-            <thead>
-              <tr class="border-b border-[#cfc5b4] bg-[#faf7f0] text-[#565145]">
-                <th class="py-2.5 px-4 font-bold uppercase">SKU / ITEM DESIGNATION</th>
-                <th class="py-2.5 px-4 font-bold uppercase">CATEGORY</th>
-                <th class="py-2.5 px-4 font-bold uppercase text-right">UNIT COST</th>
-                <th class="py-2.5 px-4 font-bold uppercase text-center bg-[#efe9dc]/50">ON HAND (INLINE EDIT)</th>
-                <th class="py-2.5 px-4 font-bold uppercase text-right">RESERVED</th>
-                <th class="py-2.5 px-4 font-bold uppercase text-right">FREE TO USE</th>
-                <th class="py-2.5 px-4 font-bold uppercase text-center">LOCATIONS BREAKDOWN</th>
-                <th class="py-2.5 px-4 font-bold uppercase text-right">ACTION</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-[#cfc5b4]/50" id="stock-table-body">
-              ${products.map(p => {
-                const freeToUse = store.getProductFreeToUse(p.sku);
+          <div class="overflow-x-auto">
+            <table class="w-full text-left font-mono text-xs border-collapse">
+              <thead>
+                <tr class="border-b border-[#cfc5b4] bg-[#faf7f0] text-[#565145]">
+                  <th class="py-2.5 px-4 font-bold uppercase">SKU / ITEM DESIGNATION</th>
+                  <th class="py-2.5 px-4 font-bold uppercase">CATEGORY</th>
+                  <th class="py-2.5 px-4 font-bold uppercase text-right">UNIT COST</th>
+                  <th class="py-2.5 px-4 font-bold uppercase text-center bg-[#efe9dc]/50">ON HAND (INLINE EDIT)</th>
+                  <th class="py-2.5 px-4 font-bold uppercase text-right">RESERVED</th>
+                  <th class="py-2.5 px-4 font-bold uppercase text-right">FREE TO USE</th>
+                  <th class="py-2.5 px-4 font-bold uppercase text-center">LOCATIONS BREAKDOWN</th>
+                  <th class="py-2.5 px-4 font-bold uppercase text-right">ACTION</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#cfc5b4]/50" id="stock-table-body">
+                ${products.map(p => {
+                  const freeToUse = store.getProductFreeToUse(p.sku);
                 const reserved = Math.max(0, p.stock - freeToUse);
                 const locEntries = Object.entries(p.locations || {});
                 const primaryLoc = locEntries[0] ? locEntries[0][0] : "LOC-WH1-A";
@@ -171,8 +185,9 @@ export function renderStockView(container) {
           </table>
         </div>
       </div>
-    </div>
-  `;
+    `}
+  </div>
+`;
 
   // Attach event handlers
   const searchInput = container.querySelector('#stockSearchInput');

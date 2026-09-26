@@ -317,7 +317,14 @@ class StockSenseStore {
     // Success: Clear token & update user password record hash (P2.12)
     delete this.state.resetTokens[cleanEmail];
     if (!this.state.credentials) this.state.credentials = {};
-    this.state.credentials[cleanEmail] = mockPasswordHash(newPassword);
+    const newHash = mockPasswordHash(newPassword);
+    this.state.credentials[cleanEmail] = newHash;
+
+    const user = (this.state.users || []).find(u => (u.email || '').toLowerCase() === cleanEmail);
+    if (user) {
+      user.passwordHash = newHash;
+    }
+
     this.saveState();
     this.notify('auth:passwordReset', { email: cleanEmail });
     return { success: true };
@@ -515,6 +522,19 @@ class StockSenseStore {
     return true;
   }
 
+  updateStockOnHand(sku, newQty) {
+    const prod = this.state.products.find(p => p.sku === sku);
+    if (!prod) return null;
+    if (!prod.locations) prod.locations = {};
+    const locKeys = Object.keys(prod.locations);
+    const targetLoc = locKeys.length > 0 ? locKeys[0] : "LOC-WH1-A";
+    locKeys.forEach(k => {
+      if (k !== targetLoc) prod.locations[k] = 0;
+    });
+    this.setProductLocationStock(sku, targetLoc, Math.max(0, Number(newQty) || 0));
+    return this.enrichProduct(prod);
+  }
+
   setProductLocationStock(sku, locationId, newQty) {
     const prod = this.state.products.find(p => p.sku === sku);
     if (!prod) return null;
@@ -675,7 +695,8 @@ class StockSenseStore {
 
   validateMovement(id) {
     const mov = this.state.movements.find(m => m.id === id);
-    if (!mov || mov.status === 'DONE' || mov.status === 'CANCELED') return null;
+    if (!mov) return null;
+    if (mov.status === 'DONE' || mov.status === 'CANCELED') return mov;
 
     // Lifecycle progression: DRAFT -> WAITING -> READY -> DONE
     if (mov.status === 'DRAFT') {
@@ -686,13 +707,17 @@ class StockSenseStore {
       mov.status = 'DONE';
 
       // Physical stock movement upon completion
-      if (mov.type === 'RECEIPT' && mov.toLocationId) {
+      if (mov.type === 'RECEIPT') {
+        const targetLoc = mov.toLocationId || "LOC-WH1-A";
         mov.items?.forEach(item => {
-          this.setProductLocationStock(item.sku, mov.toLocationId, (this.getProductBySku(item.sku)?.locations?.[mov.toLocationId] || 0) + item.qty);
+          const cur = this.getProductBySku(item.sku)?.locations?.[targetLoc] || 0;
+          this.setProductLocationStock(item.sku, targetLoc, cur + Math.abs(Number(item.qty) || 0));
         });
-      } else if (mov.type === 'DISPATCH' && mov.fromLocationId) {
+      } else if (mov.type === 'DISPATCH') {
+        const sourceLoc = mov.fromLocationId || "LOC-WH1-A";
         mov.items?.forEach(item => {
-          this.setProductLocationStock(item.sku, mov.fromLocationId, Math.max(0, (this.getProductBySku(item.sku)?.locations?.[mov.fromLocationId] || 0) - item.qty));
+          const cur = this.getProductBySku(item.sku)?.locations?.[sourceLoc] || 0;
+          this.setProductLocationStock(item.sku, sourceLoc, Math.max(0, cur - Math.abs(Number(item.qty) || 0)));
         });
       }
     }
@@ -703,7 +728,8 @@ class StockSenseStore {
 
   cancelMovement(id) {
     const mov = this.state.movements.find(m => m.id === id);
-    if (!mov || mov.status === 'DONE') return null;
+    if (!mov) return null;
+    if (mov.status === 'DONE') return mov;
 
     mov.status = 'CANCELED';
     this.notify('movement:update', mov);

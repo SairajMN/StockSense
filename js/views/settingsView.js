@@ -214,7 +214,13 @@ export function renderSettingsView(container) {
                 </tr>
               </thead>
               <tbody class="divide-y divide-[#cfc5b4]/50">
-                ${locations.map(loc => `
+                ${locations.length === 0 ? `
+                  <tr>
+                    <td colspan="5" class="py-6 px-4 text-center font-mono text-xs text-[#565145]">
+                      No storage locations registered. Register a storage bay using the form above.
+                    </td>
+                  </tr>
+                ` : locations.map(loc => `
                   <tr class="hover:bg-[#faf7f0]">
                     <td class="py-2.5 px-4 font-bold text-[#b84328]">${loc.id}</td>
                     <td class="py-2.5 px-4 font-bold text-[#262421]">${loc.name}</td>
@@ -250,7 +256,13 @@ export function renderSettingsView(container) {
                 </tr>
               </thead>
               <tbody class="divide-y divide-[#cfc5b4]/50">
-                ${warehouses.map(wh => `
+                ${warehouses.length === 0 ? `
+                  <tr>
+                    <td colspan="4" class="py-6 px-4 text-center font-mono text-xs text-[#565145]">
+                      No parent warehouses registered in the system ledger.
+                    </td>
+                  </tr>
+                ` : warehouses.map(wh => `
                   <tr class="hover:bg-[#faf7f0]">
                     <td class="py-2.5 px-4 font-bold text-[#b84328]">${wh.id}</td>
                     <td class="py-2.5 px-4 font-bold text-[#262421]">${wh.name}</td>
