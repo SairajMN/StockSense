@@ -15,6 +15,30 @@ export function renderDashboardView(container) {
 
   container.innerHTML = `
     <div class="flex flex-col w-full p-4 lg:p-6 gap-6 font-body text-[#262421]">
+      <!-- Active Low-Stock Alert Banner (P1.9) -->
+      ${metrics.atRiskCount > 0 && !sessionStorage.getItem('stocksense_dismiss_alert') ? `
+        <div id="low-stock-banner" class="bg-[#ffdad2] border-2 border-[#b84328] p-3 text-[#262421] font-mono text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-kraft-dark animate-pulse">
+          <div class="flex items-center gap-3">
+            <span class="rubber-stamp rubber-stamp-primary text-[10px] px-2 py-0.5 font-bold">CRITICAL THRESHOLD</span>
+            <div>
+              <span class="font-bold uppercase text-[#b84328]">TELEMETRY ALERT:</span>
+              <span class="font-medium ml-1">
+                <strong>${metrics.atRiskCount} SKUs</strong> have breached depot minimum buffers (${metrics.outOfStockCount} depleted zero-stock, ${metrics.lowStockCount} low-stock).
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <a href="#products" class="px-3 py-1.5 bg-[#b84328] hover:bg-[#972b12] text-white font-bold uppercase transition-colors flex items-center gap-1">
+              <span>INSPECT MASTER CATALOG</span>
+              <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </a>
+            <button id="btn-dismiss-alert" class="px-2 py-1 text-[#58413c] hover:text-[#b84328] font-bold text-sm cursor-pointer" title="Dismiss Alert">
+              ✕
+            </button>
+          </div>
+        </div>
+      ` : ''}
+
       <!-- Operational Header / Manifest Status Bar -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white px-5 py-3 border border-[#cfc5b4] relative shadow-sm">
         <span class="absolute -top-1.5 -left-1.5 text-[10px] font-mono text-[#8c716b] select-none font-bold">+</span>
@@ -459,15 +483,33 @@ function initDashboardEvents(container) {
     });
   }
 
+  // Dismiss low-stock alert
+  const dismissBtn = container.querySelector('#btn-dismiss-alert');
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => {
+      sessionStorage.setItem('stocksense_dismiss_alert', 'true');
+      container.querySelector('#low-stock-banner')?.remove();
+    });
+  }
+
   // Verify movement action
   container.querySelectorAll('.btn-complete-mov').forEach(btn => {
     btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       const id = btn.getAttribute('data-id');
-      const mov = store.state.movements.find(m => m.id === id);
-      if (mov) {
-        mov.status = 'DONE';
-        store.notify('movement:update', mov);
-        renderDashboardView(container);
+      store.validateMovement(id);
+      renderDashboardView(container);
+    });
+  });
+
+  // Clicking row opens Movement Detail Modal (P1.12)
+  container.querySelectorAll('.movement-row').forEach(row => {
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      const cells = row.querySelectorAll('td');
+      const id = cells[0]?.querySelector('div')?.textContent?.trim();
+      if (id) {
+        window.dispatchEvent(new CustomEvent('open-movement-detail', { detail: { id } }));
       }
     });
   });

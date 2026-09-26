@@ -399,9 +399,9 @@ function renderProductsTableHtml(products) {
                 </td>
                 <td class="py-3 px-4 text-right whitespace-nowrap">
                   <div class="font-bold text-sm ${p.stock <= p.safetyThreshold ? 'text-[#b84328]' : 'text-[#262421]'}">
-                    ${p.stock} <span class="text-[10px] text-[#8c716b]">UNITS</span>
+                    ${p.stock} <span class="text-[10px] text-[#8c716b] uppercase">${p.uom || 'units'}</span>
                   </div>
-                  <div class="text-[10px] text-[#8c716b]">MIN: ${p.safetyThreshold}</div>
+                  <div class="text-[10px] text-[#8c716b]">MIN: ${p.safetyThreshold} ${p.uom || 'units'}</div>
                 </td>
                 <td class="py-3 px-4 text-center whitespace-nowrap">
                   <span class="inline-block px-2 py-0.5 text-[10px] font-bold border ${statusBadge} uppercase tracking-wider">
@@ -410,15 +410,21 @@ function renderProductsTableHtml(products) {
                 </td>
                 <td class="py-3 px-4 text-right whitespace-nowrap">
                   <div class="font-bold text-[#262421]">$${totalVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-                  <div class="text-[10px] text-[#8c716b]">@ $${p.unitCost.toFixed(2)}/ea</div>
+                  <div class="text-[10px] text-[#8c716b]">@ $${p.unitCost.toFixed(2)}/${p.uom || 'ea'}</div>
                 </td>
                 <td class="py-3 px-4 text-right whitespace-nowrap">
                   <div class="flex items-center justify-end gap-1">
+                    <button class="btn-edit-prod px-2 py-1 bg-white hover:bg-[#efe9dc] border border-[#cfc5b4] text-[#262421] text-[10px] font-bold uppercase cursor-pointer" data-sku="${p.sku}" title="Edit product specifications">
+                      EDIT
+                    </button>
                     <button class="btn-adjust-stock px-2 py-1 bg-white hover:bg-[#efe9dc] border border-[#cfc5b4] text-[#262421] text-[10px] font-bold uppercase cursor-pointer" data-sku="${p.sku}" title="Adjust stock level">
                       ADJUST
                     </button>
                     <button class="btn-transfer-stock px-2 py-1 bg-[#536443] hover:bg-[#3b4c2d] text-white text-[10px] font-bold uppercase cursor-pointer" data-sku="${p.sku}" title="Transfer bay">
                       TRANSFER
+                    </button>
+                    <button class="btn-delete-prod px-2 py-1 bg-[#ffdad6] hover:bg-[#ba1a1a] hover:text-white border border-[#ba1a1a]/40 text-[#ba1a1a] text-[10px] font-bold uppercase transition-colors cursor-pointer" data-sku="${p.sku}" title="Delete SKU from catalog">
+                      DEL
                     </button>
                   </div>
                 </td>
@@ -578,6 +584,28 @@ function initProductsEvents(container) {
       applyProductFilters();
     });
   }
+
+  // Edit product handler (P1.4)
+  container.querySelectorAll('.btn-edit-prod').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sku = btn.getAttribute('data-sku');
+      const prod = store.getProductBySku(sku);
+      if (prod) {
+        window.dispatchEvent(new CustomEvent('open-edit-product', { detail: { product: prod } }));
+      }
+    });
+  });
+
+  // Delete product handler (P1.4)
+  container.querySelectorAll('.btn-delete-prod').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sku = btn.getAttribute('data-sku');
+      if (confirm(`Are you sure you want to permanently delete SKU "${sku}" from the catalog? This will affect current stock counts.`)) {
+        store.deleteProduct(sku);
+        renderProductsView(container);
+      }
+    });
+  });
 
   // Adjust stock handler
   container.querySelectorAll('.btn-adjust-stock').forEach(btn => {
