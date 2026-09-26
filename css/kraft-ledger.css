@@ -1,0 +1,159 @@
+/* StockSense — Kraft Ledger Industrial Design System */
+
+:root {
+  --color-primary: #b84328;
+  --color-primary-dark: #972b12;
+  --color-primary-container: #b84328;
+  --color-primary-fixed: #ffdad2;
+  --color-on-primary: #ffffff;
+  
+  --color-secondary: #536443;
+  --color-secondary-dark: #3b4c2d;
+  --color-secondary-container: #d3e6bd;
+  --color-secondary-fixed: #d6e9c0;
+  --color-on-secondary: #ffffff;
+
+  --color-surface: #f4f0e6;
+  --color-surface-bright: #fdf9f4;
+  --color-surface-container: #faf7f0;
+  --color-surface-container-low: #efe9dc;
+  --color-surface-container-high: #ebe5d8;
+  --color-surface-container-highest: #e6e0d2;
+  --color-surface-lowest: #ffffff;
+
+  --color-outline: #8c716b;
+  --color-outline-variant: #cfc5b4;
+  --color-tertiary: #565145;
+  --color-on-surface: #262421;
+  --color-on-surface-variant: #58413c;
+
+  --font-mono: 'Courier Prime', monospace;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+/* Base resets & typography */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+/* Rubber Stamp Effect */
+.rubber-stamp {
+  border: 2px solid currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  transform: rotate(-2.5deg);
+  mask-image: radial-gradient(circle, black 70%, rgba(0, 0, 0, 0.8) 100%);
+  user-select: none;
+}
+
+.rubber-stamp-primary {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: rgba(184, 67, 40, 0.05);
+}
+
+.rubber-stamp-secondary {
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+  background-color: rgba(83, 100, 67, 0.06);
+}
+
+/* Perforated ticket notches */
+.ticket-notch {
+  position: relative;
+}
+
+.ticket-notch::before,
+.ticket-notch::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 50%;
+  z-index: 10;
+}
+
+.ticket-notch::before {
+  top: -6px;
+  left: -6px;
+}
+
+.ticket-notch::after {
+  bottom: -6px;
+  right: -6px;
+}
+
+/* Industrial shadow */
+.shadow-kraft {
+  box-shadow: 2px 2px 0px #cfc5b4;
+}
+
+.shadow-kraft-dark {
+  box-shadow: 2px 2px 0px #262421;
+}
+
+/* Subtle aged dot-grid texture */
+.kraft-grid-overlay {
+  background-image: radial-gradient(#cfc5b4 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Barcode animation effect */
+@keyframes scanline {
+  0% {
+    top: 0%;
+  }
+  50% {
+    top: 100%;
+  }
+  100% {
+    top: 0%;
+  }
+}
+
+.scanning-bar {
+  animation: scanline 2.4s ease-in-out infinite;
+}
+
+/* Modal backdrop fade */
+.modal-backdrop {
+  background-color: rgba(38, 36, 33, 0.6);
+  backdrop-filter: blur(2px);
+}
+
+/* Custom scrollbars for ledger tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-surface-container-low);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline);
+}
